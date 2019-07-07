@@ -1,7 +1,7 @@
 import { https, config } from 'firebase-functions';
 import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
-import { issueTransfer } from './webhookHandlers';
+import { issueTransfer, issueReprioritized, estimateCleared, estimateSet } from './webhookHandlers';
 import Webhook from './types/Webhook';
 
 const app = express()
@@ -23,10 +23,26 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.post('/', async (req: Request, res: Response) => {
   const body = req.body as Webhook;
+
+  console.log(req.body);
   
   try {
-    if(body.type === 'issue_transfer') {
-      const response = await issueTransfer(body);
+    const response = await (() => {
+      switch (body.type) {
+        case 'issue_transfer':
+          return issueTransfer(body);
+        case 'issue_reprioritized':
+          return issueReprioritized(body);
+        case 'estimate_cleared':
+          return estimateCleared(body);
+        case 'estimate_set':
+          return estimateSet(body);
+        default:
+          return null;
+      }
+    })()
+
+    if (response) {
       const responseBody = await response.text();
 
       console.log(`Recieved ${response.status} (${response.statusText}) from ${response.url}`, responseBody);
@@ -35,8 +51,7 @@ app.post('/', async (req: Request, res: Response) => {
         success: true,
         error: false,
       });
-    }
-    else {
+    } else {
       return res.status(400).json({
         success: false,
         error: "invalid hook",
@@ -51,4 +66,5 @@ app.post('/', async (req: Request, res: Response) => {
   }
 });
 
+export { app };
 export const hook = https.onRequest(app);
