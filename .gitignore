@@ -63,3 +63,6 @@ typings/
 ## Compiled JavaScript files
 **/*.js
 **/*.js.map
+
+## Firebase runtime config
+.runtimeconfig.json

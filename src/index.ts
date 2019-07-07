@@ -13,7 +13,11 @@ app.post('/', async (req: Request, res: Response) => {
   
   try {
     if(body.type === 'issue_transfer') {
-      await issueTransfer(body);
+      const response = await issueTransfer(body);
+      const responseBody = await response.text();
+
+      console.log(`Recieved ${response.status} (${response.statusText}) from ${response.url}`, responseBody);
+
       return res.json({
         success: true,
         error: false,
