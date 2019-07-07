@@ -1,5 +1,5 @@
-import { https } from 'firebase-functions';
-import express, { Request, Response } from 'express';
+import { https, config } from 'firebase-functions';
+import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import { issueTransfer } from './webhookHandlers';
 import Webhook from './types/Webhook';
@@ -7,6 +7,19 @@ import Webhook from './types/Webhook';
 const app = express()
 
 app.use(bodyParser.urlencoded({extended: true}));
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const token = config().webhook.token;
+
+  if (req.query.token !== token) {
+    return res.status(401).json({
+      success: false,
+      error: '[Unauthorized] No token passed',
+    });
+  }
+
+  return next();
+});
 
 app.post('/', async (req: Request, res: Response) => {
   const body = req.body as Webhook;
