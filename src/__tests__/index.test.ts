@@ -143,4 +143,34 @@ describe("/hook", () => {
     expect(estimateClearedStub).toHaveBeenCalledTimes(0);
     expect(estimateSetStub).toHaveBeenCalledTimes(0);
   });
+
+  it('should return 401 if no token is passed', async () => {
+    await request(app)
+      .post('/')
+      .expect(401)
+      .expect({
+        success: false,
+        error: '[Unauthorized] No token passed',
+      });
+
+    expect(issueTransferStub).toHaveBeenCalledTimes(0);
+    expect(issueReprioritizedStub).toHaveBeenCalledTimes(0);
+    expect(estimateClearedStub).toHaveBeenCalledTimes(0);
+    expect(estimateSetStub).toHaveBeenCalledTimes(0);
+  });
+
+  it('should return 401 if invalid token is passed', async () => {
+    await request(app)
+      .post('/?token=INVALID')
+      .expect(401)
+      .expect({
+        success: false,
+        error: '[Unauthorized] No token passed',
+      });
+
+    expect(issueTransferStub).toHaveBeenCalledTimes(0);
+    expect(issueReprioritizedStub).toHaveBeenCalledTimes(0);
+    expect(estimateClearedStub).toHaveBeenCalledTimes(0);
+    expect(estimateSetStub).toHaveBeenCalledTimes(0);
+  });
 });
