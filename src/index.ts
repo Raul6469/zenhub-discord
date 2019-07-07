@@ -10,6 +10,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.post('/', async (req: Request, res: Response) => {
   const body = req.body as Webhook;
+
+  console.log(req.body);
   
   try {
     const response = await (() => {
@@ -51,4 +53,5 @@ app.post('/', async (req: Request, res: Response) => {
   }
 });
 
+export { app };
 export const hook = https.onRequest(app);
