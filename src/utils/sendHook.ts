@@ -11,5 +11,7 @@ export default (message: WebhookRequest) => {
     },
   };
 
+  console.log("Sending", postOptions, "to", config().discord.webhook);
+
   return fetch(config().discord.webhook, postOptions);
 };
