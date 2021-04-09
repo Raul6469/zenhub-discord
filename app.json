@@ -1,0 +1,16 @@
+{
+  "name": "ZenHub-Discord",
+  "description": "Receive ZenHub updates in your Discord server",
+  "repository": "https://github.com/Raul6469/zenhub-discord",
+  "keywords": [
+    "ZenHub",
+    "Discord",
+    "webhooks"
+  ],
+  "env": {
+    "DISCORD_WEBHOOK": {
+      "description": "Your Discord webhook URL where messages updates will be sent to",
+      "required": "true"
+    }
+  }
+}
